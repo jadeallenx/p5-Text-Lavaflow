@@ -1,0 +1,77 @@
+=head1 POD Slideshow Example
+
+POD is a great language.
+
+With POD I can make slides.
+
+=head1 Source Code
+
+ sub formatter_meta {
+  my ($text) = @_;
+  foreach (split /\n\n*/, $text) {
+   next if(/^\s*$/ or /^\s*#/);
+   s/\s*#.*$//; # we support comments
+   my ($tag, $param, $option) = split /\s\s*/;
+   if (! $option) {
+     $option = $param;
+     $param  = "";
+   }
+   print qq(<$tag $param>$option</$tag>\n);
+  }
+ }
+
+=end foo
+
+=head1 Text Formatting
+
+B<Bold Text>
+
+I<Italic Text>
+
+C<Code Markup>
+
+=head2 Display lists
+
+=over
+
+=item Item 1
+
+=item Item 2
+
+=item Item 3
+
+=back
+
+=head1 Or links
+
+Link: L<http://www.daemon.de>.
+
+Renamed Link: L<Daemon|http://www.daemon.de>.
+
+=head1 A picture
+
+.img monkey.jpg
+
+=head1 Incremental List
+
+=over
+
+=item *
+
+Something
+
+=item *
+
+Something else
+
+=item *
+
+This other thing.
+
+=back
+
+=head1 Have Questions?
+
+You can find this code on Github!
+
+=cut

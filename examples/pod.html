@@ -1,0 +1,104 @@
+
+<html>
+<head>
+<title></title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+
+
+<h1 id="POD-Slideshow-Example">POD Slideshow Example</h1>
+
+<p>POD is a great language.</p>
+
+<p>With POD I can make slides.</p>
+
+<h1 id="Source-Code">Source Code</h1>
+
+<pre><code>sub formatter_meta {
+ my ($text) = @_;
+ foreach (split /\n\n*/, $text) {
+  next if(/^\s*$/ or /^\s*#/);
+  s/\s*#.*$//; # we support comments
+  my ($tag, $param, $option) = split /\s\s*/;
+  if (! $option) {
+    $option = $param;
+    $param  = &quot;&quot;;
+  }
+  print qq(&lt;$tag $param&gt;$option&lt;/$tag&gt;\n);
+ }
+}</code></pre>
+
+<h1 id="Text-Formatting">Text Formatting</h1>
+
+<p><b>Bold Text</b></p>
+
+<p><i>Italic Text</i></p>
+
+<p><code>Code Markup</code></p>
+
+<h2 id="Display-lists">Display lists</h2>
+
+<dl>
+
+<dt>Item 1</dt>
+<dd>
+
+</dd>
+<dt>Item 2</dt>
+<dd>
+
+</dd>
+<dt>Item 3</dt>
+<dd>
+
+</dd>
+</dl>
+
+<h1 id="Or-links">Or links</h1>
+
+<p>Link: <a href="http://www.daemon.de">http://www.daemon.de</a>.</p>
+
+<p>Renamed Link: <a href="http://www.daemon.de">Daemon</a>.</p>
+
+<h1 id="A-picture">A picture</h1>
+
+<p>.img monkey.jpg</p>
+
+<h1 id="Incremental-List">Incremental List</h1>
+
+<ul>
+
+<li><p>Something</p>
+
+</li>
+<li><p>Something else</p>
+
+</li>
+<li><p>This other thing.</p>
+
+</li>
+</ul>
+
+<h1 id="Have-Questions-">Have Questions?</h1>
+
+<p>You can find this code on Github!</p>
+
+<h1 id="POD-ERRORS">POD ERRORS</h1>
+
+<p>Hey! <b>The above document had some coding errors, which are explained below:</b></p>
+
+<dl>
+
+<dt>Around line 23:</dt>
+<dd>
+
+<p>=end foo without matching =begin.  (Stack: [empty])</p>
+
+</dd>
+</dl>
+
+</body>
+</html>
+
+
