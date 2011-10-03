@@ -1,0 +1,71 @@
+Text-Lavaflow
+
+Text::Lavaflow turns text processed by Text::Markup into HTML5 compliant 
+slides using the same CSS and Javascript written by the HTML5 Rocks team
+at Google.
+
+It is more or less a port of the Python program 'landslide' and reuses
+both the themes from that application, as well as borrows liberally from
+the landslide provided base HTML5 template "base.html".
+
+As of this writing, Text::Markup supports the following markup styles:
+
+ * Markdown
+ * MultiMarkdown
+ * Pod
+ * MediaWiki
+ * Textile
+ * Trac
+
+And if you need something not listed here, you can easily subclass Text::Markup
+and drop in support for it.
+
+INSTALLATION
+
+To install this module, run the following commands:
+
+	perl Build.PL
+	./Build
+	./Build test
+	./Build install
+
+SUPPORT AND DOCUMENTATION
+
+After installing, you can find documentation for this module with the
+perldoc command.
+
+    perldoc Text::Lavaflow
+
+You can also look for information at:
+
+    RT, CPAN's request tracker (report bugs here)
+        http://rt.cpan.org/NoAuth/Bugs.html?Dist=Text-Lavaflow
+
+    AnnoCPAN, Annotated CPAN documentation
+        http://annocpan.org/dist/Text-Lavaflow
+
+    CPAN Ratings
+        http://cpanratings.perl.org/d/Text-Lavaflow
+
+    Search CPAN
+        http://search.cpan.org/dist/Text-Lavaflow/
+
+ACKNOWLEDGEMENTS
+
+Lavaflow reuses components from the following non-Perl projects, which are 
+subject to a different license than my own code. These are:
+
+  highlight.js - BSD license
+  landslide    - Apache license
+  HTML5 rocks  - Apache license
+
+LICENSE AND COPYRIGHT
+
+Copyright (C) 2011 Mark Allen
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of either: the GNU General Public License as published
+by the Free Software Foundation; or the Artistic License.
+
+See http://dev.perl.org/licenses/ for more information.
+
