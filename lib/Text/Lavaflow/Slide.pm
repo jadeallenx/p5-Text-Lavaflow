@@ -4,16 +4,12 @@ use strict;
 use warnings;
 
 use Tiny::Object::RW qw(
-    raw_format
     raw
     input_file
-    cooked_format
     cooked
-    slide_number
+    number
     classes
     );
-
-use Try::Tiny;
 
 sub new {
     my $proto = shift;

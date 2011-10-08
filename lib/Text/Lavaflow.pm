@@ -28,6 +28,7 @@ use Config::Tiny;
 use Carp qw(confess);
 
 use Text::Lavaflow::ParserFactory;
+use Text::Lavaflow::GeneratorFactory;
 use Text::Lavaflow::Slide;
 
 =head1 NAME
@@ -68,12 +69,12 @@ sub new {
     $self->log($self->start_logger()) unless defined $self->log();
 
     $self->read_file() if defined $self->input_file();
-    $self->generate_slides() if defined $self->output_file();
+    $self->generate_slides() if $self->slides();
 
     return $self;
 }
 
-=head2 function2
+=head2 start_logger
 
 =cut
 
@@ -100,6 +101,10 @@ sub start_logger {
     return $logger;
 }
 
+=head2 load_config
+
+=cut
+
 sub load_config {
     my $self = shift;
     my $config_file = $self->config_file();
@@ -121,6 +126,10 @@ sub load_config {
         return undef;
     };
 }
+
+=head2 read_file
+
+=cut
 
 sub read_file {
     my $self = shift;
@@ -148,6 +157,42 @@ sub read_file {
         $self->log->error("[read_file] Could not read file: $_");
         return undef;
     };
+
+}
+
+=head2 generate_slides
+
+=cut
+
+sub generate_slides {
+    my $self = shift;
+
+    return undef unless defined $self->slides();
+
+    return undef unless defined $self->input_format();
+
+    my $generator = Text::Lavaflow::GeneratorFactory->new($self->input_format());
+
+    foreach my $slide ( @{ $self->slides() } ) {
+        my $content = $generator->process($slide->raw());
+        unless ( defined $content ) {
+            $self->logger->warn("Could not generate cooked slide content for slide #" . $slide->number() . " in file " . $slide->input_file());
+            next;
+        }
+        $slide->cooked($content);
+    }
+
+}
+
+=head2 output
+
+=cut
+
+sub output {
+    my $self = shift;
+
+    # magic happens here
+    # populate base.html with slide content
 }
 
 sub _parse_raw_contents {
@@ -168,9 +213,8 @@ sub _parse_raw_contents {
                 $self->log->debug("[_parse_raw_content] Building new Text::Lavaflow::Slide object: $cnt");
                 push @{ $self->{'slides'} }, Text::Lavaflow::Slide->new(
                     raw => $raw_chunk,
-                    raw_format => $input_format,
                     input_file => $input_file,
-                    slide_number => $cnt + 1,
+                    number => $cnt + 1,
                     );
                 $cnt++;
             }
