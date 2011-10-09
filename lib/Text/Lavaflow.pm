@@ -175,10 +175,12 @@ sub generate_slides {
 
     foreach my $slide ( @{ $self->slides() } ) {
         my $content = $generator->process($slide->raw());
+
         unless ( defined $content ) {
             $self->logger->warn("Could not generate cooked slide content for slide #" . $slide->number() . " in file " . $slide->input_file());
             next;
         }
+
         $slide->cooked($content);
     }
 
