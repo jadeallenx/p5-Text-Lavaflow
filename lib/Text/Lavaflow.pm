@@ -3,6 +3,8 @@ package Text::Lavaflow;
 use strict;
 use warnings;
 
+use v5.12;
+
 use Object::Tiny::RW qw(
     slides
     input_filepath
@@ -29,6 +31,7 @@ use Carp qw(confess);
 
 use Text::Lavaflow::ParserFactory;
 use Text::Lavaflow::GeneratorFactory;
+use Text::Lavaflow::Macro;
 use Text::Lavaflow::Slide;
 
 =head1 NAME
@@ -142,8 +145,8 @@ sub read_file {
         die "$input_file is a directory" if -d $input_file;
 
 
-        $self->log->debug("[read_file] Reading file $input_file");
-        my @lines = read_file($input_file);
+        $self->log->debug("[read_file] Reading file $input_file as UTF8 data");
+        my @lines = read_file($input_file, binmode => ':encoding(UTF−8)');
         if ( $self->_parse_raw_contents(@lines) ) {
             $self->log->info("[read_file] Finished reading $input_file");
             return 1;
@@ -180,6 +183,8 @@ sub generate_slides {
             $self->logger->warn("Could not generate cooked slide content for slide #" . $slide->number() . " in file " . $slide->input_file());
             next;
         }
+
+
 
         $slide->cooked($content);
     }
