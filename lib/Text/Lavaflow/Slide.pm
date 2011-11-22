@@ -8,7 +8,6 @@ use Tiny::Object::RW qw(
     input_file
     cooked
     number
-    classes
     );
 
 sub new {
@@ -20,10 +19,20 @@ sub new {
     return $self;
 }
 
-sub as_HTML {
+sub classes {
+    my $self = shift;
+
+    if ( @_ ) {
+        push @{ $self->{'classes'} }, @_;
+    }
+    
+    return defined $self->{'classes'} ? : @{$self->{'classes'}} : ();
+}
+
+sub content {
     my $self = shift;
     
-    return $self->cooked->as_HTML("", "", {});
+    return $self->cooked();
 }
 
 1;

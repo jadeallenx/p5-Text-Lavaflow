@@ -20,14 +20,12 @@ sub process {
 
     foreach my $macro ( $self->macros() ) {
         if ( $macro->can('expand') ) {
-            $slide = $macro->expand($slide);
+            $macro->expand($slide);
         }
         else {
             next;
         }
     }
-
-    return $slide;
 }
 
 1;

@@ -10,7 +10,8 @@ use Data::Printer;
 use Text::Markdown;
 use HTML::TreeBuilder;
 
-my @lines = read_file($ARGV[0], chomp => 1)  or die;
+binmode(STDOUT, ":encoding(UTF-8)");
+my @lines = read_file($ARGV[0], binmode => ":encoding(UTF-8)", chomp => 1)  or die;
 
 my @slides;
 my @tmp;
@@ -38,7 +39,7 @@ push @slides, join "\n", @tmp;
 
 my $md = Text::Markdown->new();
 
-my $html_fragment = $md->markdown($slides[5]);
+my $html_fragment = $md->markdown($slides[2]);
  
 my $root = HTML::TreeBuilder->new_from_content($html_fragment)->disembowel();
 

@@ -10,7 +10,7 @@ sub expand {
     my $self = shift;
     my $slide = shift; # should be HTML::Element object
 
-    my $root = HTML::TreeBuilder->new_from_content($slide->content())->disembowel();
+    my $root = HTML::TreeBuilder->new_from_content($slide->cooked())->disembowel();
 
     foreach my $elem ( $root->look_down( "_tag" => "code" ) ) {
         foreach my $content_r ( $elem->content_refs_list() ) {
@@ -23,7 +23,7 @@ sub expand {
         }
     }
 
-    $slide->content(
+    $slide->cooked(
         $root->as_HTML("", undef, {})
     );
 

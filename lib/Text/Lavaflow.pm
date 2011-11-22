@@ -6,7 +6,6 @@ use warnings;
 use v5.12;
 
 use Object::Tiny::RW qw(
-    slides
     input_filepath
     theme_filepath
     input_format
@@ -15,7 +14,6 @@ use Object::Tiny::RW qw(
     input_file
     config_file
     config
-    _toc
     log
     loglevel
     logfile
@@ -170,23 +168,24 @@ sub read_file {
 sub generate_slides {
     my $self = shift;
 
-    return undef unless defined $self->slides();
+    return undef unless $self->slides();
 
-    return undef unless defined $self->input_format();
+    return undef unless $self->input_format();
 
     my $generator = Text::Lavaflow::GeneratorFactory->new($self->input_format());
+    my $macros = Text::Lavaflow::Macro->new();
 
-    foreach my $slide ( @{ $self->slides() } ) {
+    foreach my $slide ( $self->slides() ) {
         my $content = $generator->process($slide->raw());
 
-        unless ( defined $content ) {
+        unless ( $content ) {
             $self->logger->warn("Could not generate cooked slide content for slide #" . $slide->number() . " in file " . $slide->input_file());
             next;
         }
 
-
-
         $slide->cooked($content);
+
+        $macros->process($slide);
     }
 
 }
@@ -202,6 +201,23 @@ sub output {
     # populate base.html with slide content
 }
 
+=head2 slides
+
+=cut
+
+sub slides {
+    my $self = shift;
+    
+    if ( @_ ) {
+        foreach my $slide ( @_ ) {
+            next unless ref($slide) eq "Text::Lavaflow::Slide";
+            push @{ $self->{'slides'} }, $slide;
+        }
+    }
+
+    return exists $self->{'slides'} ? @{ $self->{'slides'} } : ();
+}
+
 sub _parse_raw_contents {
     my $self = shift;
     my @lines = @_;
@@ -214,15 +230,17 @@ sub _parse_raw_contents {
         my $parser = Text::Lavaflow::ParserFactory->new($input_format);
         die "Couldn't get a parser for format $input_format" unless defined $parser;
         my $raw_content_aref = $parser->parse(@lines);
-        if ( scalar @$raw_contant_aref ) {
-            my $cnt = 0;
+        if ( scalar @$raw_content_aref ) {
+            my $cnt = 1;
             foreach my $raw_chunk ( @{ $raw_content_aref } ) {
                 $self->log->debug("[_parse_raw_content] Building new Text::Lavaflow::Slide object: $cnt");
-                push @{ $self->{'slides'} }, Text::Lavaflow::Slide->new(
-                    raw => $raw_chunk,
-                    input_file => $input_file,
-                    number => $cnt + 1,
-                    );
+                $self->slides( 
+                    Text::Lavaflow::Slide->new(
+                        raw => $raw_chunk,
+                        input_file => $input_file,
+                        number => $cnt,
+                    ) 
+                );
                 $cnt++;
             }
             $self->log->info("[_parse_raw_content] Added all raw content from $input_file");
@@ -271,9 +289,6 @@ Please report any bugs or feature requests to C<bug-text-lavaflow at rt.cpan.org
 the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Text-Lavaflow>.  I will be notified, and then you'll
 automatically be notified of progress on your bug as I make changes.
 
-
-
-
 =head1 SUPPORT
 
 You can find documentation for this module with the perldoc command.
@@ -297,14 +312,18 @@ L<http://annocpan.org/dist/Text-Lavaflow>
 
 L<http://cpanratings.perl.org/d/Text-Lavaflow>
 
-=item * Search CPAN
+=item * MetaCPAN
 
-L<http://metacpan.org/Text-Lavaflow/>
+L<https://metacpan.org/module/Text::Lavaflow>
+
+=item * GitHub
+
+L<https://github.com/mrallen1/p5-Text-Lavaflow>
 
 =back
 
-
 =head1 ACKNOWLEDGEMENTS
+
 
 
 =head1 LICENSE AND COPYRIGHT
@@ -316,7 +335,6 @@ under the terms of either: the GNU General Public License as published
 by the Free Software Foundation; or the Artistic License.
 
 See http://dev.perl.org/licenses/ for more information.
-
 
 =cut
 
