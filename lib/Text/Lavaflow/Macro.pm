@@ -14,22 +14,20 @@ sub new {
     return $self;
 }
 
-sub examine {
+sub process {
     my $self = shift;
-    my $content = shift;
-
-    my $root = HTML::TreeBuilder->new_from_content($content)->disembowel();
+    my $slide = shift;
 
     foreach my $macro ( $self->macros() ) {
         if ( $macro->can('expand') ) {
-            $content = $macro->expand($root);
+            $slide = $macro->expand($slide);
         }
         else {
             next;
         }
     }
 
-    return $content;
+    return $slide;
 }
 
 1;

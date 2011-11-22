@@ -1,4 +1,4 @@
-package Text::Lavaflow::Macro::SpeakerNotes;
+package Text::Lavaflow::Macro::CSSClasses;
 
 use strict;
 use warnings;
@@ -7,7 +7,7 @@ use Object::Tiny;
 use HTML::TreeBuilder;
 
 sub regex {
-    return qr/^\.notes:\s*([^\s].*)$/;
+    return qr/^\.fx:\s*([^\s].*)$/;
 }
 
 sub expand {
@@ -20,8 +20,8 @@ sub expand {
         foreach my $content_r ( $elem->content_refs_list() ) {
             next if ref ${$content_r};
             if ( ${$content_r} =~ $self->regex() ) {
-                $elem->attr( 'class' => 'notes' );
-                ${$content_r} = $1;
+                push @{ $slide->classes() }, ( split / /, $1 );
+                $elem->delete;
                 next;
             }
 
@@ -33,7 +33,6 @@ sub expand {
     );
 
     return $slide;
-
 }
 
 1;

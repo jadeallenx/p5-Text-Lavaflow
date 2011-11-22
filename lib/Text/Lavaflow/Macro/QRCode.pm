@@ -1,4 +1,4 @@
-package Text::Lavaflow::Macro::SpeakerNotes;
+package Text::Lavaflow::Macro::QRCode;
 
 use strict;
 use warnings;
@@ -7,7 +7,7 @@ use Object::Tiny;
 use HTML::TreeBuilder;
 
 sub regex {
-    return qr/^\.notes:\s*([^\s].*)$/;
+    return qr/\.qr:\s*([^\s].*)$/;
 }
 
 sub expand {
@@ -20,8 +20,15 @@ sub expand {
         foreach my $content_r ( $elem->content_refs_list() ) {
             next if ref ${$content_r};
             if ( ${$content_r} =~ $self->regex() ) {
-                $elem->attr( 'class' => 'notes' );
-                ${$content_r} = $1;
+                my ($size, $stuff) = split /\|/, $1;
+                $elem->attr( 'class' => 'qr' );
+                ${$content_r} = HTML::Element->new_from_lol( [
+                    'img', 
+                    { 'src' => 
+                        "http://chart.apis.google.com/chart?chs=$size" . "x" .
+                        "$size&cht=qr&chl=$stuff&chf=bg,s,00000000&choe=UTF-8" },
+                    { alt => 'QR code' },
+                ] );
                 next;
             }
 
@@ -33,7 +40,6 @@ sub expand {
     );
 
     return $slide;
-
 }
 
 1;
