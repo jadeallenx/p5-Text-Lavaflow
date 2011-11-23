@@ -3,13 +3,13 @@ package Text::Lavaflow::Macro;
 use strict;
 use warnings;
 
-use Module:Pluggable search_path => 'Text::Lavaflow::Macro' sub_name => 'macros';
+use Module::Pluggable search_path => 'Text::Lavaflow::Macro', sub_name => 'macros';
 
 sub new {
     my $proto = shift;
     my $class = ref $proto || $proto;
 
-    bless { @_ }, $class;
+    my $self = bless { @_ }, $class;
 
     return $self;
 }

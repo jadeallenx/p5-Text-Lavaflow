@@ -6,7 +6,6 @@ use warnings;
 use v5.12;
 
 use Object::Tiny::RW qw(
-    input_filepath
     theme_filepath
     input_format
     output_format
@@ -20,7 +19,7 @@ use Object::Tiny::RW qw(
     theme
     );
 
-use File::Slurp qw(read_file read_dir);
+use File::Slurp qw(read_file);
 use Try::Tiny;
 use Data::Printer;
 use Log::Dispatch;
@@ -65,12 +64,13 @@ sub new {
 
     my $self = bless { @_ }, $class;
 
-    $self->load_config() if defined $self->config_file();
+    $self->load_config() if $self->config_file();
 
-    $self->log($self->start_logger()) unless defined $self->log();
+    $self->log($self->start_logger()) unless $self->log();
 
-    $self->read_file() if defined $self->input_file();
+    $self->read_file() if $self->input_file();
     $self->generate_slides() if $self->slides();
+    $self->output() if $self->output_file();
 
     return $self;
 }
@@ -197,8 +197,26 @@ sub generate_slides {
 sub output {
     my $self = shift;
 
-    # magic happens here
-    # populate base.html with slide content
+    return unless $self->slides();
+
+    my $fh;
+    if ( $self->output_file() ) {
+        try {
+            open $fh, ">", $self->output_file() or die $!;
+        }
+        catch {
+            die "Couldn't open " . $self->output_file() . ": $_\n";
+        };
+    }
+    else {
+        $fh = *STDOUT;
+    }
+
+    binmode($fh, ":encoding(UTF-8)");
+
+    foreach my $slide ( $self->slides() ) {
+        print $fh $slide->content();
+    }
 }
 
 =head2 slides

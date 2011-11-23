@@ -19,7 +19,7 @@ sub process {
     my $markup = Text::Markup->new();
 
     my $html = $markup->parse( 
-            file => (join "", $slides->raw()),
+            file => $slide->raw(),
             format => 'markdown',
     );
 

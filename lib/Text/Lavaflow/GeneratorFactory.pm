@@ -12,7 +12,7 @@ sub new {
 
     my $input_format = shift;
 
-    my $self = bless $self, $class; 
+    my $self = bless { @_ }, $class; 
 
     return $self->dispatch($input_format);
 }

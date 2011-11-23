@@ -3,7 +3,7 @@ package Text::Lavaflow::Slide;
 use strict;
 use warnings;
 
-use Tiny::Object::RW qw(
+use Object::Tiny::RW qw(
     raw
     input_file
     cooked
